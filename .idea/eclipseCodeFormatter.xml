@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EclipseCodeFormatterProjectSettings">
+    <option name="selectedGlobalProfile">
+      <Settings>
+        <option name="enableJSFormatting" value="true" />
+        <option name="enableJavaFormatting" value="false" />
+        <option name="formatter" value="ECLIPSE" />
+        <option name="id" value="1469029451535" />
+        <option name="name" value="goodjs" />
+        <option name="pathToConfigFileJS" value="C:/workspace/edocument/edoc-site/src/site/resources/code/javascript_formatter_google.xml" />
+      </Settings>
+    </option>
+  </component>
+</project>
