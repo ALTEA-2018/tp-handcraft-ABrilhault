@@ -1,6 +1,9 @@
 import annotations.Controller;
+import annotations.RequestMapping;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +22,28 @@ public class DispatcherServlet extends HttpServlet {
 	private Map<String, Method> uriMappings = new HashMap<>();
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		System.out.println("Getting request for " + req.getRequestURI());
-		// TODO
+		String uri = req.getRequestURI();
+		try {
+			Method m = getMappingForUri(uri);
+			m.getDeclaringClass().getDeclaredConstructor().newInstance();
+			Map<String, String[]> param = req.getParameterMap();
+			Object o;
+			if (param.isEmpty()) {
+				o = m.invoke(m.getDeclaringClass().getDeclaredConstructor().newInstance());
+			} else {
+				o = m.invoke(m.getDeclaringClass().getDeclaredConstructor().newInstance(), param);
+			}
+
+			resp.getWriter().print(o.toString());
+
+		} catch (NullPointerException e) {
+			resp.sendError(404, "no mapping found for request uri /test");
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+			resp.sendError(500, "exception when calling method someThrowingMethod : some exception message");
+		}
+
 	}
 
 	@Override
@@ -44,7 +66,11 @@ public class DispatcherServlet extends HttpServlet {
 
 	protected void registerMethod(Method method) {
 		System.out.println("Registering method " + method.getName());
-		// TODO
+		// test if method has annotation RequestMappin && que ce n'est pas un type alors, on enregistre le mapping
+		RequestMapping a = method.getAnnotation(RequestMapping.class);
+		if ((a != null) && (method.getReturnType() != void.class)) {
+				uriMappings.put(a.uri() ,method);
+		}
 	}
 
 	protected Map<String, Method> getMappings(){

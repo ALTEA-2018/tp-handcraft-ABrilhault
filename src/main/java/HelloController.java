@@ -1,5 +1,7 @@
+import annotations.Controller;
 import annotations.RequestMapping;
 
+@Controller
 public class HelloController {
 
 	@RequestMapping(uri="/hello")
